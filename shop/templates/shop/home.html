@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block alert %}
+{% if request.GET.status_message %}
+<div class="container">
+    <div class="row">
+        <div class="alert alert-success" role="alert">
+            <strong>{{ request.GET.status_message }}</strong> 
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

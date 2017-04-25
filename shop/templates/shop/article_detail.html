@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block main %}
+<div class="col-md-9">
+<div class="thumbnail">
+    <img class="img-responsive" src={{ art.image.url }} alt="Photo">
+    <div class="caption-full">
+        <h4 class="pull-right">${{ art.price }}</h4>
+        <h4><a href="#">{{ art.producer }} {{  art.model }}</a></h4>
+        <p>{{ art.description }}</p>
+
+    <div class="ratings">
+        <p class="pull-right">{{ comments.count }}rewiews</p>
+        <p>
+            <span class="glyphicon glyphicon-star"></span>
+            <span class="glyphicon glyphicon-star"></span>
+            <span class="glyphicon glyphicon-star"></span>
+            <span class="glyphicon glyphicon-star"></span>
+            <span class="glyphicon glyphicon-star-empty"></span>
+            4.0 stars
+        </p>
+    </div>
+</div>
+
+<div class="well">
+
+    <div class="text-right">
+        <a class="btn btn-success" href={% url 'comment_article' art.slug %}>Leave a Review</a>
+    </div>
+
+    {% for comment in comments %}
+    <hr>
+    <div class="row">
+        <div class="col-md-12">
+            <span class="glyphicon glyphicon-star"></span>
+            <span class="glyphicon glyphicon-star"></span>
+            <span class="glyphicon glyphicon-star"></span>
+            <span class="glyphicon glyphicon-star"></span>
+            <span class="glyphicon glyphicon-star-empty"></span>
+            {{ comment.name }}
+            <span class="pull-right">{{ comment.created }}</span>
+            <p>{{ comment.body|linebreaks }}</p>
+        </div>
+    </div>
+    {% empty %}
+    <p>There are no reviews yet.</p>
+    {% endfor %}
+
+</div>
+</div>
+{% endblock %}
