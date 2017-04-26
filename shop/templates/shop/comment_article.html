@@ -5,8 +5,8 @@
 {% load crispy_forms_tags %}
 
 {% block alert %}
-{% if form.errors %}
-    <div class="{{ type_message }}" role="alert">
+{% if comment_form.errors %}
+    <div class="alert alert-danger" role="alert">
         <strong>Please, correct next errors!</strong>
     </div>
 {% endif %}
@@ -17,7 +17,7 @@
 <div class="row">
     <div class="col-sm-6 col-sm-offset-3">
         <h1>{{ title }}</h1>
-        <form action='.' method="POST">
+        <form action='{% url 'comment_article' art.slug %}' method="POST">
             {% csrf_token %}
             {{ comment_form|crispy }}
             <input type="submit" name="" value="submit form" class='btn btn-primary'>

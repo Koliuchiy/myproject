@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.urlresolvers import reverse
+from taggit.managers import TaggableManager
 
 # Create your models here.
 class Producer(models.Model):
@@ -41,9 +42,11 @@ class Article(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.ImageField(blank=True)
     description = models.TextField(blank=True, null=True)
+    stock = models.PositiveIntegerField()
     available = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    tags = TaggableManager()
 
     class Meta:
         ordering = ('producer', 'model')
@@ -54,11 +57,6 @@ class Article(models.Model):
     def __str__(self):
         return "%s %s" %(self.producer, self.model)
 
-    class AvailebalManager(models.Manager):
-        def get_queryset(self):
-            return super().get_queryset().filter(available=True)
-    objects = models.Manager() # The default manager.
-    availabl = AvailebalManager() # Our custom manager.
 
 
 class Comment(models.Model):
@@ -74,4 +72,4 @@ class Comment(models.Model):
         ordering = ('created',)
 
     def __str__(self):
-        return 'Comment by {} on {}'.format(self.name, self.post)
+        return 'Comment by {} on {}'.format(self.name, self.article)

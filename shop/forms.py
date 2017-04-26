@@ -11,13 +11,3 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ('name', 'email', 'body')
-
-    def __init__(self, *args, **kwargs):
-        super(CommentForm, self).__init__(*args, **kwargs)
-
-    def clean(self):
-        cleaned_data = super(CommentForm, self).clean()
-        return cleaned_data
-
-    def save(self):
-        cleaned_data = super(CommentForm, self).clean()

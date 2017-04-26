@@ -4,6 +4,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.mail import send_mail
 from django.conf import settings
 from django.urls import reverse
+from django.db.models import Count
 from django.contrib.auth.decorators import login_required
 from .models import Category, Producer, Article
 from . import forms
@@ -12,7 +13,7 @@ from . import forms
 # Create your views here.
 def home(request):
     categories = Category.objects.all()
-    articles = Article.availabl.all()
+    articles = Article.objects.filter(available=True)
     template = 'shop/home.html'
     paginator = Paginator(articles, 3) # 3 posts in each page
     page = request.GET.get('page')
@@ -54,16 +55,11 @@ def contact_admin(request):
                 status_message = 'Your message is sent!'
                 type_message = "alert alert-success"
             return HttpResponseRedirect('%s?status_message=%s&amp;type_message=%s'
-                                        % (reverse('contact'), status_message, type_message))
+                                        % (reverse('home'), status_message, type_message))
         else:
-            type_message = "alert alert-danger"
-            status_message = 'Please enter valid data!'
             return render(request, 'shop/contact.html', {'form': form,
-                                                             'title': title,
-                                                             'status_message': status_message,
-                                                             'type_message': type_message})
+                                                         'title': title})
     else:
-        form = forms.ContactForm(request.POST)
         form = forms.ContactForm()
         return render(request, 'shop/contact.html', {'form': form, 'title': title})
 
@@ -77,7 +73,7 @@ def userProfile(request):
 
 
 def category_list(request, category):
-    articles = Article.availabl.filter(category__slug=category)
+    articles = Article.objects.filter(available=True, category__slug=category)
     categories = Category.objects.all()
     template = 'shop/category_list.html'
     paginator = Paginator(articles, 3) # 3 posts in each page
@@ -102,16 +98,22 @@ class ArticleDetailView(DetailView):
     template_name = 'category_detail.html'  '''
 
 def article_detail(request, slug):
-    articles = Article.availabl.all()
+    articles = Article.objects.filter(available=True)
     categories = Category.objects.all()
     template = 'shop/article_detail.html'
     art = get_object_or_404(Article, slug=slug)
     # List of active comments for this post
     comments = art.comments.filter(active=True)
+    art_tags_ids = art.tags.values_list('id', flat=True)
+    similar_articles = Article.objects.filter(available=True, tags__in=art_tags_ids)\
+                                   .exclude(id=art.id)
+    similar_articles = similar_articles.annotate(same_tags=Count('tags'))\
+                                 .order_by('-same_tags','-created')[:4]
     return render(request, template, {'articles': articles,
                                       'categories': categories,
                                       'art': art,
-                                      'comments': comments})
+                                      'comments': comments,
+                                      'similar_articles': similar_articles})
 
 def comment_article(request, slug):
     template = 'shop/comment_article.html'
@@ -129,8 +131,12 @@ def comment_article(request, slug):
             status_message = 'Your reviews was added!'
             type_message= "alert alert-success"
             return HttpResponseRedirect('%s?status_message=%s&amp;type_message=%s'
-                                        % (reverse('comment_article'), status_message, type_message))
+                                        % (reverse('article_detail', args=[art.slug]),
+                                        status_message, type_message))
+        else:
+            return render(request, template, {'comment_form': comment_form,
+                                              'art': art,})
     else:
         comment_form = forms.CommentForm()
-    return render(request, template, {'comment_form': comment_form,
-                                      'art': art,})
+        return render(request, template, {'comment_form': comment_form,
+                                          'art': art,})

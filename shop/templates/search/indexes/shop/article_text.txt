@@ -1,0 +1,2 @@
+{{ object.producer }}
+{{ object.model }}
