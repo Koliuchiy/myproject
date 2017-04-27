@@ -17,7 +17,7 @@
 <div class="row">
     <div class="col-sm-6 col-sm-offset-3">
         <h1>{{ title }}</h1>
-        <form action='{% url 'comment_article' art.slug %}' method="POST">
+        <form action='{% url 'shop:comment_article' art.slug %}' method="POST">
             {% csrf_token %}
             {{ comment_form|crispy }}
             <input type="submit" name="" value="submit form" class='btn btn-primary'>

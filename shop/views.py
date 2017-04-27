@@ -6,6 +6,7 @@ from django.conf import settings
 from django.urls import reverse
 from django.db.models import Count
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from .models import Category, Producer, Article
 from . import forms
 
@@ -49,27 +50,16 @@ def contact_admin(request):
             try:
                 send_mail(subject, message, email, recipients)
             except:
-                status_message = 'Your message not sent. Try again later'
-                type_message = "alert alert-danger"
+                messages.error(request, 'Your message not sent. Try again later')
             else:
-                status_message = 'Your message is sent!'
-                type_message = "alert alert-success"
-            return HttpResponseRedirect('%s?status_message=%s&amp;type_message=%s'
-                                        % (reverse('home'), status_message, type_message))
+                messages.success(request, 'Your message is sent!')
+            return HttpResponseRedirect(reverse('home'))
         else:
             return render(request, 'shop/contact.html', {'form': form,
                                                          'title': title})
     else:
         form = forms.ContactForm()
         return render(request, 'shop/contact.html', {'form': form, 'title': title})
-
-
-@login_required
-def userProfile(request):
-    user = request.user
-    context = {'user': user}
-    template = 'shop/profile.html'
-    return render(request, template, context)
 
 
 def category_list(request, category):
@@ -128,11 +118,8 @@ def comment_article(request, slug):
             new_comment.article = art
             # Save the comment to the database
             new_comment.save()
-            status_message = 'Your reviews was added!'
-            type_message= "alert alert-success"
-            return HttpResponseRedirect('%s?status_message=%s&amp;type_message=%s'
-                                        % (reverse('article_detail', args=[art.slug]),
-                                        status_message, type_message))
+            messages.success(request, 'Your reviews was added!')
+            return HttpResponseRedirect(reverse('shop:article_detail', args=[art.slug]))
         else:
             return render(request, template, {'comment_form': comment_form,
                                               'art': art,})

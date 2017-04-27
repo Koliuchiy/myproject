@@ -30,7 +30,7 @@ class Category(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('category_list', args=[self.slug])
+        return reverse('shop:category_list', args=[self.slug])
 
 
 class Article(models.Model):
@@ -56,6 +56,9 @@ class Article(models.Model):
 
     def __str__(self):
         return "%s %s" %(self.producer, self.model)
+
+    def get_absolute_url(self):
+        return reverse('shop:article_detail', args=[self.slug])
 
 
 

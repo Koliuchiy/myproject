@@ -17,20 +17,15 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
-from shop import views as shop_views
 
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^', include('shop.urls', namespace='shop')),
     url(r'^accounts/', include('allauth.urls')),
-    url(r'^$', shop_views.home, name='home'),
-    url(r'^about$', shop_views.about, name='about'),
-    url(r'^profile$', shop_views.userProfile, name='profile'),
-    url(r'^contact$', shop_views.contact_admin, name='contact'),
-    url(r'^(?P<category>[-\w]+)$', shop_views.category_list, name='category_list'),
-    url(r'^(?P<slug>[-\w]+)/$', shop_views.article_detail, name='article_detail'),
-    url(r'^(?P<slug>[-\w]+)/comment$', shop_views.comment_article, name='comment_article'),
+    url(r'^profile/', include('profiles.urls', namespace='profiles')),
+    url(r'^images/', include('images.urls', namespace='images')),
 ]
 
 if settings.DEBUG:

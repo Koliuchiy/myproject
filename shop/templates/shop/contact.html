@@ -17,7 +17,7 @@
 <div class="row">
     <div class="col-sm-6 col-sm-offset-3">
         <h1>{{ title }}</h1>
-        <form class="" action='{% url 'contact' %}' method="POST">
+        <form class="" action='{% url 'shop:contact' %}' method="POST">
             {% csrf_token %}
             {{ form|crispy }}
             <input type="submit" name="submit-button" value="submit form" class='btn btn-primary'>

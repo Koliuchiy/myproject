@@ -5,7 +5,9 @@
 {% block main %}
 <div class="col-md-9">
 <div class="thumbnail">
-    <img class="img-responsive" src={{ art.image.url }} alt="Photo">
+    <img class="img-responsive" alt="Responsive image"
+        src="{% if article.image %}{{ article.image.url }}
+             {% else %}{% static 'img/default_art.jpg' %}{% endif %}"
     <div class="caption-full">
         <h4 class="pull-right">${{ art.price }}</h4>
         <h4><a href="#">{{ art.producer }} {{  art.model }}</a></h4>
@@ -27,7 +29,7 @@
 <div class="well">
 
     <div class="text-right">
-        <a class="btn btn-success" href={% url 'comment_article' art.slug %}>Leave a Review</a>
+        <a class="btn btn-success" href='{% url 'shop:comment_article' art.slug %}'>Leave a Review</a>
     </div>
 
     {% for comment in comments %}
@@ -57,7 +59,7 @@
             <img class="img-responsive" alt="Responsive image" src="{{ article.image.url }}"/>
             <div class="caption">
                 <h4 class="pull-right">${{ article.price }}</h4>
-                <h4><a href={% url 'article_detail' article.slug %}>{{ article.producer }} {{  article.model }}</a>
+                <h4><a href='{% url 'shop:article_detail' article.slug %}'>{{ article.producer }} {{  article.model }}</a>
                 </h4>
                 <p>{{ article.description }}</p>
             </div>
