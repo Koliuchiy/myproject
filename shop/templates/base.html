@@ -55,13 +55,13 @@
                     </li>
                     {% if request.user.is_authenticated %}
                     <li {% if request.path == '/profile' %}class="active"{% endif %}>
-                        <a href='{% url 'profiles:profile' %}'>Profile</a>
+                        <a href='{% url 'profiles:profile' request.user.id %}'>Profile</a>
                     </li>
                     <li {% if request.path == '/images' %}class="active"{% endif %}>
                         <a href='{% url 'images:create' %}'>Create</a>
                     </li>
                     {% endif %}
-                    <li {% if request.path == contact %}class="active"{% endif %}>
+                    <li {% if request.path == '/contact' %}class="active"{% endif %}>
                         <a href='{% url 'shop:contact' %}'>Contact</a>
                     </li>
 

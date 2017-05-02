@@ -3,5 +3,5 @@ from . import views as profile_views
 
 
 urlpatterns = [
-    url(r'^$', profile_views.userProfile, name='profile'),
+    url(r'^(?P<user_id>[-\w]+)/$', profile_views.userProfile, name='profile'),
 ]

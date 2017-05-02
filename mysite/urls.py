@@ -22,10 +22,11 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^', include('shop.urls', namespace='shop')),
     url(r'^accounts/', include('allauth.urls')),
     url(r'^profile/', include('profiles.urls', namespace='profiles')),
+    url(r'^cart/', include('cart.urls', namespace='cart')),
     url(r'^images/', include('images.urls', namespace='images')),
+    url(r'^', include('shop.urls', namespace='shop')),
 ]
 
 if settings.DEBUG:

@@ -2,32 +2,84 @@
 
 {% load static %}
 
+{% load crispy_forms_tags %}
+
+{% block title %}Article detail{% endblock %}
+
+{% block exstacss %}
+<link href="{% static "css/article_detail.css" %}" rel="stylesheet">
+{% endblock %}
+
 {% block main %}
 <div class="col-md-9">
-<div class="thumbnail">
-    <img class="img-responsive" alt="Responsive image"
-        src="{% if article.image %}{{ article.image.url }}
-             {% else %}{% static 'img/default_art.jpg' %}{% endif %}"
-    <div class="caption-full">
-        <h4 class="pull-right">${{ art.price }}</h4>
-        <h4><a href="#">{{ art.producer }} {{  art.model }}</a></h4>
-        <p>{{ art.description }}</p>
+    <div class="thumbnail">
 
-    <div class="ratings">
-        <p class="pull-right">{{ comments.count }}rewiews</p>
-        <p>
-            <span class="glyphicon glyphicon-star"></span>
-            <span class="glyphicon glyphicon-star"></span>
-            <span class="glyphicon glyphicon-star"></span>
-            <span class="glyphicon glyphicon-star"></span>
-            <span class="glyphicon glyphicon-star-empty"></span>
-            4.0 stars
-        </p>
-    </div>
-</div>
+        <div class="wrapper row">
 
-<div class="well">
+					<div class="preview col-md-6" id="photo_detail">
+						<div class="preview-pic tab-content">
+						  <div class="tab-pane active" id="pic-1">
+                              <img src="{% if art.image %}{{ art.image.url }}
+                                        {% else %}{% static 'img/default_art.jpg' %}
+                                        {% endif %}"/></div>
+						  <div class="tab-pane" id="pic-2"><img src="http://placekitten.com/400/252" /></div>
+						  <div class="tab-pane" id="pic-3"><img src="http://placekitten.com/400/252" /></div>
+						  <div class="tab-pane" id="pic-4"><img src="http://placekitten.com/400/252" /></div>
+						  <div class="tab-pane" id="pic-5"><img src="http://placekitten.com/400/252" /></div>
+						</div>
+						<ul class="preview-thumbnail nav nav-tabs">
+						  <li class="active"><a data-target="#pic-1" data-toggle="tab">
+                              <img src="{% if art.image %}{{ art.image.url }}
+                                        {% else %}{% static 'img/default_art.jpg' %}
+                                        {% endif %}" /></a></li>
+						  <li><a data-target="#pic-2" data-toggle="tab"><img src="http://placekitten.com/200/126" /></a></li>
+						  <li><a data-target="#pic-3" data-toggle="tab"><img src="http://placekitten.com/200/126" /></a></li>
+						  <li><a data-target="#pic-4" data-toggle="tab"><img src="http://placekitten.com/200/126" /></a></li>
+						  <li><a data-target="#pic-5" data-toggle="tab"><img src="http://placekitten.com/200/126" /></a></li>
+						</ul>
+					</div>
 
+				<div class="details col-md-6">
+                    <h3>{{ art.producer }} {{  art.model }}</h3>
+
+                    <!-- Precios -->
+                    <h6 class="title-price"><small>best price</small></h6>
+                    <h3 style="margin-top:0px;">$ {{ art.price }}</h3>
+
+
+                    <div class="section" style="padding-bottom:20px;">
+                    <form action="{% url "cart:cart_add" art.id %}" method="POST">
+                        {{ cart_article_form|crispy }}
+                        {% csrf_token %}
+                        <button class="btn btn-success" id="buy">
+                            <span style="margin-right:20px"
+                            class="glyphicon glyphicon-shopping-cart"
+                            aria-hidden="true"></span>Add to Cart</button>
+                    </form>
+                    </div>
+
+                    <div class="ratings">
+                        <p class="pull-right">{{ comments.count }} rewiews</p>
+                        <p>
+                            <span class="glyphicon glyphicon-star"></span>
+                            <span class="glyphicon glyphicon-star"></span>
+                            <span class="glyphicon glyphicon-star"></span>
+                            <span class="glyphicon glyphicon-star"></span>
+                            <span class="glyphicon glyphicon-star-empty"></span>
+                            4.0 stars
+                        </p>
+                    </div>
+				</div>
+		</div>
+
+        <hr>
+
+        <div class="wrapper row" id="description_detail">
+            {{ art.description }}
+        </div>
+
+
+    <div class="well">
     <div class="text-right">
         <a class="btn btn-success" href='{% url 'shop:comment_article' art.slug %}'>Leave a Review</a>
     </div>
@@ -49,9 +101,12 @@
     {% empty %}
     <p>There are no reviews yet.</p>
     {% endfor %}
-</div>
-</div>
+    </div>
+
+    </div>
+
 <div class="row">
+    {% if similar_articles %}
     <h2>You may also like this items</h2>
     {% for article in similar_articles %}
     <div class="col-sm-4 col-lg-4 col-md-4">
@@ -76,6 +131,7 @@
         </div>
     </div>
     {% endfor %}
+    {% endif %}
 </div>
 </div>
 {% endblock %}

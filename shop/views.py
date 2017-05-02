@@ -8,6 +8,7 @@ from django.db.models import Count
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Category, Producer, Article
+from cart.forms import CartAddArticleForm
 from . import forms
 
 
@@ -88,10 +89,11 @@ class ArticleDetailView(DetailView):
     template_name = 'category_detail.html'  '''
 
 def article_detail(request, slug):
+    template = 'shop/article_detail.html'
     articles = Article.objects.filter(available=True)
     categories = Category.objects.all()
-    template = 'shop/article_detail.html'
     art = get_object_or_404(Article, slug=slug)
+    cart_article_form = CartAddArticleForm()
     # List of active comments for this post
     comments = art.comments.filter(active=True)
     art_tags_ids = art.tags.values_list('id', flat=True)
@@ -103,7 +105,8 @@ def article_detail(request, slug):
                                       'categories': categories,
                                       'art': art,
                                       'comments': comments,
-                                      'similar_articles': similar_articles})
+                                      'similar_articles': similar_articles,
+                                      'cart_article_form': cart_article_form})
 
 def comment_article(request, slug):
     template = 'shop/comment_article.html'
